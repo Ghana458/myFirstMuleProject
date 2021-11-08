@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="992ef2c4-23a5-443d-86ce-8176185bdcd6" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="07d80ccf-7693-4030-bc57-1bb91c45974a" />
+	<flow name="testFlow" doc:id="c8c66526-50db-4640-a5df-70bef40ee153" >
+		<http:listener doc:name="Listener" doc:id="1df1e187-276c-4728-9d8d-66caeb9d7ee8" config-ref="HTTP_Listener_config" path="/test"/>
+		<ee:transform doc:name="Transform Message" doc:id="56a48c93-ad51-4a2b-8d98-f8dec405360b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var a=now()
+output application/json
+---
+{
+	"Total time" : a,
+	"TodayDateTime":a as DateTime  as String {format : "yyyy-MMM-dd 'T' h:mm:ss"},
+	"stringDate" : a as Date  as String {format : "dd/MM/yyyy"},
+	"OnlyDate" :a as Date  as String {format : "dd"},
+	"Onlymonth" :a as Date  as String {format : "MMMM"},
+	"Onlyyear" : a as Date  as String {format : "yyyy"}
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
